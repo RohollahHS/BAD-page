@@ -1,0 +1,789 @@
+<!-- from https://getbootstrap.com/docs/5.3/examples/album/ -->
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <!-- <script src="/docs/5.3/assets/js/color-modes.js"></script> -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.118.2">
+    <title>BAMM: Bidirectional Autoregressive Motion Model</title>
+    <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/album/"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3"><link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"><link rel="apple-touch-icon" href="/docs/5.3/assets/img/favicons/apple-touch-icon.png" sizes="180x180"><link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png"><link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png"><link rel="manifest" href="/docs/5.3/assets/img/favicons/manifest.json"><link rel="mask-icon" href="/docs/5.3/assets/img/favicons/safari-pinned-tab.svg" color="#712cf9"><link rel="icon" href="/docs/5.3/assets/img/favicons/favicon.ico"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <meta name="theme-color" content="#712cf9">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+      }
+
+      .masthead {
+        height: 100vh;
+        min-height: 500px;
+        background-image: url('./website/head.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+
+      .btn span.icon {
+        background: url(assets/arxiv-logomark-small.svg) no-repeat;
+        float: left;
+        width: 10px;
+        height: 40px;
+      }
+
+      .arxiv-icon {
+        background-image: url(assets/arxiv-logomark-small.svg);
+        background-size: cover;
+        display: inline-block;
+        background-position: center center;
+        height: 24px;
+        width: 24px;
+      }
+
+      .mmm-card {
+        border-color: #660000;
+        border-style: solid;
+        border-width: 2px;
+      }
+
+      .custom-video-size {
+        width: 100%;
+        /* Sets the width of the video to 100% of its container */
+        width: 100%;
+        /* Sets the width of the video to 100% of its container */
+      }
+
+      .card-body {
+        min-height: 120px;
+        /* Set a minimum height */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      body {
+        background-color: #ffffff;
+        /* Or any other color code */
+      }
+
+      video{
+            height:auto
+        }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-12 col-md-12 mx-auto">
+            <h1>BAMM: Bidirectional Autoregressive Motion Model</h1>
+		  <h1>(ECCV 2024)</h1>
+            <h5>Ekkasit Pinyoanuntapong°, Muhammad Usama Saleem°, Pu Wang°, Minwoo Lee°, Srijan Das°, Chen Chen†</h5>
+	    <p>
+		<small class="text-muted">°University of North Carolina at Charlotte, </small>
+		<small class="text-muted">†University of Central Florida</small>
+	    </p>
+	  <a type="button" class="btn btn-outline-secondary" href="https://arxiv.org/abs/2403.19435">
+		<svg width="16" height="20">
+		    <image xlink:href="assets/arxiv-logomark-small.svg" src="assets/arxiv-logomark-small.svg"
+			width="16" height="16" />
+		</svg>
+		arXiv
+	    </a>
+		<a type="button" class="btn btn-outline-secondary" href="https://github.com/exitudio/BAMM/">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-github" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8">
+                            </path>
+                        </svg>
+                        Code
+                    </a>
+
+          </div>
+          <!-- <div class="d-flex justify-content-center" style="padding-top: 50px; width: 100%;">
+            <img src="./assets/images/BAMM-Landing.png" class="img-fluid" alt="Responsive image" style="width: 100%;">
+          </div>
+          <div class="caption" style="margin-top: 10px;">
+            <strong>(a) Motion Length Prediction:</strong> Text-to-motion models often require specific input lengths, making them sensitive to motion generation. In contrast, BAMM automatically predicts the end of the motion, thus avoiding reliance on inaccurate motion length estimations. <strong>(b) High-quality Text-to-Motion:</strong> BAMM generates natural human movements precisely aligned with detailed textual descriptions. <strong>(c) Motion Editing:</strong> BAMM is capable of multiple editing tasks, such as inpainting (as demonstrated), outpainting, prefix prediction, suffix completion . <strong>(d) Long Sequence Generation:</strong> BAMM can generate arbitrarily long motion sequence synthesis. <p> In this figure, <strong style="color: #255F83;">blue frames</strong> indicate individual motion segments derived from text descriptions or predefined conditions (for editing tasks). <strong style="color: #660000;">Red frames</strong> highlight the sections that have been modified, while <strong style="color: rgb(255, 204, 0);">yellow frames</strong> depict the intermediate transitions between these prompted segments. </p>
+          </div> -->
+        </div>
+      </section>
+      <!-- <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <h3>Abstract</h3>
+          <div>Generating human motion from text has been dominated by denoising motion models either through diffusion or generative masking process. However, these models face great limitations in usability by requiring prior knowledge of the motion length. Conversely, autoregressive motion models address this limitation by adaptively predicting motion endpoints, at the cost of degraded generation quality and editing capabilities. To address these challenges, we propose Bidirectional Autoregressive Motion Model (BAMM), a novel text-to-motion generation framework. BAMM consists of two key components: (1) a motion tokenizer that transforms 3D human motion into discrete tokens in latent space, and (2) a masked self-attention transformer that autoregressively predicts randomly masked tokens via a hybrid attention masking strategy. By unifying generative masked modeling and autoregressive modeling, BAMM captures rich and bidirectional dependencies among motion tokens, while learning the probabilistic mapping from textual inputs to motion outputs with dynamically-adjusted motion sequence length. This feature enables BAMM to simultaneously achieving high-quality motion generation with enhanced usability and built-in motion editability. Extensive experiments on HumanML3D and KIT-ML datasets demonstrate that BAMM surpasses current state-of-the-art methods in both qualitative and quantitative measures. </div>
+        </div>
+      </div> -->
+
+	    
+      <div class="album py-5">
+        <div class="container">
+          <h3>High-quality Motion Generation, Enhanced Usability and Built-in Motion Editability </h3>
+          <!-- Our MMM achieves the highest quality with a FID score of 0.089 and the fastest performance, averaging
+                0.081 seconds for Average Inference Time per Sentence (AITS), when compared to state-of-the-art (SOTA)
+                methods on the HumanML3D dataset, while preserving editability. The model closer to the origin is
+                better. All tests are performed on a single NVIDIA RTX A5000. --> Performance comparison with SOTA methods. The low FID score means high overall quality of the generated motion, ensuring that its authenticity and naturalness is close to the real human movements. High R-precision (Top-1) and low MM-dist means accurate alignment between the generated motion and the text prompts. "Predict Length" denotes the ability to generate motion without prior knowledge of motion length. "Input Length" refers to the ability to take input length as a constraint. "Edit" indicates motion editability. MMM and MoMask require ground-truth motion length as input. Thus, the predicted motion length from the pretrained text-to-length estimator is adopted. <div class="d-flex justify-content-center">
+            <!-- <img src="./assets/speed_all.jpg" class="img-fluid" alt="Responsive image" width="500"> -->
+            <img src="./assets/images/table.png" class="img-fluid" alt="Responsive image" width="1000">
+          </div>
+        </div>
+      </div>
+
+     <div class="album py-5">
+        <div class="container">
+          <h3>Contribution: Generating motion from text without requiring prior knowledge of the motion length while maintaining editability</h3>
+		
+             Generating human motion from text has been dominated by denoising motion models either through diffusion or generative masking process. However, these models face great limitations in usability by requiring prior knowledge of the motion length. Conversely, autoregressive motion models address this limitation by adaptively predicting motion endpoints, at the cost of degraded generation quality and editing capabilities. To address these challenges, we propose Bidirectional Autoregressive Motion Model (BAMM), a novel text-to-motion generation framework. BAMM captures rich and bidirectional dependencies among motion tokens, while learning the probabilistic mapping from textual inputs to motion outputs with dynamically-adjusted motion sequence length. 
+          </div>
+        </div>
+      </div>
+
+      
+     <div class="album py-5">
+      <div class="container">
+        <h3>Overall architecture of BAMM</h3>
+        
+        (a) Motion Tokenizer encodes the raw
+        motion sequence into discrete motion tokens according to a learned codebook. (b)
+        Masked Self-attention Transformer learns to sequentially predict next tokens conditioned on text embedding from CLIP model and future unmasked tokens. Masked
+        self-attention mechanism unifies autoregressive model and generative masked motion
+        via bidirectional and unidirectional causal masks.
+
+        <img src="./assets/architecture.png.jpg" class="img-fluid" alt="Responsive image">
+
+        Inference: Dual-iteration Cascaded Motion Decoding. In the first iteration,
+autoregressive decoding is applied by adopting unidirectional causal mask to generate
+coarse-grained motion and predict motion sequence length. In the second iteration,
+bidirectional autoregressive decoding is performed via bidirectional causal mask to
+removing and repredicting low-confidence motion tokens autoregressively.
+
+<img src="./assets/inference.jpg" class="img-fluid" alt="Responsive image">
+        
+        </div>
+      </div>
+    </div>
+	    
+      <!-- <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <h3>Overall architecture of MMM</h3>
+          <div class="d-flex justify-content-center" style="padding-top: 50px; padding-bottom: 20px;">
+            <img src="./assets/images/BAMM-Training.png" class="img-fluid" alt="Responsive image" width="1200">
+          </div>
+          <b>Overall architecture of BAMM.</b> (a) <b>Motion Tokenizer</b> encodes the raw motion sequence into discrete motion tokens according to a learned codebook. (b) <b> Masked Self-attention Transformer</b> learns to sequentially predict next tokens conditioned on text embedding from CLIP model and future unmasked tokens. Masked self-attention mechanism unifies autoregressive model and generative masked motion via bidirectional and unidirectional causal masks.
+        </div>
+      </div> -->
+      <!-- <section class="py-5 text-center container"><div class="row py-lg-5"><div class="col-lg-8 col-md-8 mx-auto"><h1>BAMM: Bidirectional Autoregressive Motion Model</h1><h5>Anonymous</h5></div></div></section> -->
+      
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-8 col-md-8 mx-auto">
+            <h1>Length Diversity</h1>
+          </div>
+        </div>
+      </section>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <!-- <h3>Length Diversity</h3> -->
+              <h6>Given a text prompt, BAMM generates diverse motion sequences along with diverse sequence lengths. MoMask and MMM face challenges to generate motion with the sequence length that is different from the ground-truth length . </h6>
+              <strong>Text prompt : <span style='color:#255F83;'>“the person crouches and walks forward.”</span> (ground truth length: 196 frames). </strong>
+              <ul>
+                <li>
+                  <b>BAMM:</b> Realistic, diverse crouch-walk sequences; superior in motion fidelity.
+                </li>
+                <li>
+                  <b>MMM:</b> Sensitive to length variations; misses crouching, struggles with order.
+                </li>
+                <li>
+                  <b>MoMask:</b> Lacks walking and crouching; limited in motion diversity.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <h4 class="mt-4">196 Frame Sequences (Ground Truth)</h4>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/BAMM/196/crouch_walk_together_196.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <!-- <p>More crouches in motion</p> -->
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(More crouches in realistic motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Section for 184 frames -->
+          <h4 class="mt-4">184 Frame Sequences</h4>
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-3 g-2">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="bj" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/BAMM/184/BAMM_crouch_then_walk_184_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM</h6>
+                  <!-- <p>performing crouches then walks, showcasing more realistic motion.</p> -->
+                  <small class="text-body-secondary">(performing crouches then walks, showcasing more realistic motion.)</small>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/MoMask/184/MoMask_crouch_walk_together_184_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <h6 class="card-text">MoMask</h6>
+                  <small class="text-body-secondary">(lacks crouching motion in the overall sequence.)</small>
+                  <!-- <p>lacks crouching motion in the overall sequence.</p> -->
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="forward-lean" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/MMM/184/MMM_crouch_walk_together_184_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <h6 class="card-text">MMM</h6>
+                  <small class="text-body-secondary">(no walking motion present in the sequence.)</small>
+                  <!-- <p>no walking motion present in the sequence.</p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Section for 156 frames -->
+          <h4 class="mt-4">156 Frame Sequences</h4>
+          <div class="row row-cols-1 row-cols-sm-3 row-cols-md-3 g-2" style="margin-top: 20px">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/BAMM/156/BAMM_crouch_walk_together_156_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM</h6>
+                  <small class="text-body-secondary">(a crouch followed by more pronounced walking.)</small>
+                  <!-- <p>a crouch followed by more pronounced walking.</p> -->
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/MoMask/156/MoMask_crouch_walk_together_156_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <h6 class="card-text">MoMask</h6>
+                  <small class="text-body-secondary">(motion sequence is reversed: starts with walking then crouches.)</small>
+                  <!-- <p>motion sequence is reversed: starts with walking then crouches.</p> -->
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/diversity_length/MMM/156/MMM_crouch_walk_together_156_video.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <h6 class="card-text">MMM</h6>
+                  <small class="text-body-secondary">(lacks any crouching motion in the sequence.)</small>
+                  <!-- <p>lacks any crouching motion in the sequence.</p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+	    
+	    
+	    
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-8 col-md-8 mx-auto">
+            <h1>Compared to SOTA</h1>
+          </div>
+        </div>
+      </section>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Text to Motion 1:</h3>
+              <h6>"A person is performing lunges"</h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/a_person_performing_lunges/BAMM/BAMM.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(correct lunges posture and hand posture while doing lunges is more realistic than ground truth)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_gt" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/a_person_performing_lunges/GT/GT.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">Ground Truth</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary"></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_t2mgpt" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/a_person_performing_lunges/MoMask/MoMask.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">MoMask</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(performing squad instead of lunges)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mld" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/a_person_performing_lunges/T2M-GPT/T2M-GPT.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">T2M-GPT</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(performing squad instead of lunges)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mdm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/a_person_performing_lunges/MDM/MDM.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">MDM</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(not performing lunges)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="margin-top: 100px;">
+            <div class="col">
+              <h3>Text to Motion 2:</h3>
+              <h6>"the person was pushed but did not fall"</h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/the_person_was_pushed_but_did_not_fall/BAMM/BAMM.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Stronger correlation to text than ground thruth is observed, as it has seen a many similar text-motion relationships during training.)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_gt" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/the_person_was_pushed_but_did_not_fall/GT/GT.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">Ground Truth</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary"></small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_t2mgpt" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/the_person_was_pushed_but_did_not_fall/MoMask/MoMask.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">MoMask</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(lack of "pushed" in motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mld" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/the_person_was_pushed_but_did_not_fall/T2M-GPT/T2M-GPT.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">T2M-GPT</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(just walking and no presence of "pushed" in motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="text-to-motion_mdm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/comparison_sota/the_person_was_pushed_but_did_not_fall/MDM/MDM.mp4" type="video/mp4">
+                </video>
+                <div class="card-body">
+                  <p class="card-text">MDM</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(stepping over something instead of "pushed" while walking)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-8 col-md-8 mx-auto">
+            <h1>Motion Editing</h1>
+          </div>
+        </div>
+      </section>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Motion Temporal Inpainting (Motion In-betweening):</h3>
+              <h6>Generating 50% motion in the middle based on the text <span style='color:#660000'>“picks up something​.”</span> conditioned on first 25% and last 25% of motion of <span style='color:#255F83'>“A person is walking forward.”</span>
+              </h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/editing/inpainting/inpainting.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Realistic Motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" autoplay controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
+          </div>
+        </div>
+      </div>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Motion Temporal Outpainting:</h3>
+              <h6>Generating first 25% and last 25% of motion of based on the text. <span style='color:#660000'>“A person jump in place carefully ”</span> conditioned on 50% motion in the middle of motion of <span style='color:#255F83'>“A person walks forward..”</span>
+              </h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/editing/outpainting/outpainting.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Realistic Motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" autoplay controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
+          </div>
+        </div>
+      </div>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Motion Temporal Prefix Editing:</h3>
+              <h6>Generating 50% motion in the last half based on the text " <span style='color:#660000'>A person walks forward up stairs and then climbs down.</span>" conditioned on the first 50% of motion of " <span style='color:#255F83'>A person gets on their hands and knees and crawls forwards, then stands up.</span>" </h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/editing/prefix/prefix.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Realistic Motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" autoplay controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
+          </div>
+        </div>
+      </div>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Motion Temporal Suffix Editing:</h3>
+              <h6>Generating 50% motion in the start based on the text <span style='color:#660000'>“hands in fighting position while the left foot kicks aggressively up​”</span> conditioned on last 50% of motion of <span style='color:#255F83'>“the body is walking backwards carefully.”</span>
+              </h6>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/editing/suffix/suffix.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Realistic Motion)</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" autoplay controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
+          </div>
+          <div class="album py-5 bg-body-tertiary">
+            <div class="container">
+              <div class="row">
+                <div class="col">
+                  <h3>Long Sequence Generation:</h3>
+                  <h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'A figure sits on the chair.', 'a man jump forward.', 'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.' <span style='color:#255F83'>Blue frames indicate the generated short motion sequences.</span>
+                    <span style='color:#660000'>Red frames indicate transition frames.</span>
+                  </h6>
+                </div>
+              </div>
+              <div class="card shadow-sm">
+                <video id="inbtween_mmm" class="custom-video-size" autoplay controls muted loop playsinline>
+                  <source src="./assets/longrange/longrange.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <p class="card-text">BAMM (our)</p>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-body-secondary">(Realistic Motion)</small>
+                  </div>
+                </div>
+              </div>
+              <!-- <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Long Sequence Generation:</h3><h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'a figure sits on the chair.', 'a man jump forward.',
+                                'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.'
+                                <span style='color:#660000'>Blue frames indicate the generated short motion sequences.</span><span style='color:#255F83'>Red frames indicate transition frames.</span></h6></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center"><div class="col"><div class="card shadow-sm"><video id="inbtween_mmm" autoplay controls muted loop playsinline height="100%"><source src="./assets/longrange/longrange.mp4" type="video/mp4"></video><div class="card-body mmm-card"><p class="card-text">BAMM (our)</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Realistic Motion)</small></div></div></div></div> -->
+              <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" autoplay controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+          <div class="col-lg-8 col-md-8 mx-auto">
+            <h1>More Results</h1>
+          </div>
+        </div>
+      </section>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <h3>Text to Motion:</h3>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="bj" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/text-to-motion/person_walks_then_steps_over_something.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM (our)</h6>
+                  <p>person walks then steps over something​.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/text-to-motion/a_person_walks_in_a_circle continuously.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM (our)</h6>
+                  <p>A person walks in a circle continuously.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2" style="margin-top: 40px">
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="forward-lean" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/text-to-motion/a_figure_walks_forward_in_a_zig_zag_pattern,_stepping_over_something_along_the_way.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM (our)</h6>
+                  <p>a figure walks forward in a zig zag pattern, stepping over something along the way.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card shadow-sm">
+                <video id="dance" autoplay controls muted loop playsinline height="100%">
+                  <source src="./assets/text-to-motion/the_man_is_marching_like_a_soldier.mp4" type="video/mp4">
+                </video>
+                <div class="card-body mmm-card">
+                  <h6 class="card-text">BAMM (our)</h6>
+                  <p>The man is marching like a soldier.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      <!-- 
+        <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Long Sequence Generation:</h3><h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'a figure sits on the chair.', 'a man jump forward.',
+                            'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.'
+                            <span style='color:#660000'>Blue frames indicate the generated short motion sequences.</span><span style='color:#255F83'>Red frames indicate transition frames.</span></h6></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center"><div class="col"><div class="card shadow-sm"><video id="longrange_true" autoplay controls muted loop playsinline height="100%"><source src="./assets/longrange/longrange.mp4" type="video/mp4"></video><div class="card-body mmm-card"><p class="card-text">BAMM (our)</p>
+																																				<!-- <div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Realistic Motion)</small></div> -->
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div> -->
+      <!-- <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Motion Completion:</h3></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2"><div class="col"><div class="card shadow-sm"><video id="complete2" autoplay controls muted loop playsinline height="100%"><source src="./assets/complete2.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Completing <u><b>first</b></u> 50% motion based on the text <span
+                                        style='color:#660000'>“A person
+                                        performs jumping jacks.”</span> conditioned on last 50% of
+                                    motion of
+                                    <span style='color:#255F83'>“A person
+                                        crawling from left to right”</span></p></div></div></div><div class="col"><div class="card shadow-sm"><video id="complete1" autoplay controls muted loop playsinline height="100%"><source src="./assets/completion1.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Completing <u><b>last</b></u> 50% motion based on the text <span
+                                        style='color:#660000'>“A person
+                                        performs jumping jacks.”</span> conditioned on first 50% of
+                                    motion of
+                                    <span style='color:#255F83'>“A person
+                                        crawling from left to right”</span></p></div></div></div></div></div></div><div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Motion Temporal Outpainting:</h3></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2"><div class="col"><div class="card shadow-sm"><video id="outpainting" autoplay controls muted loop playsinline height="100%"><source src="./assets/outpainting.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Generating first 25% and last 25% of motion of based on the text <span
+                                        style='color:#660000'>“A person sits down”</span> conditioned on 50% motion in
+                                    the middle of motion of <span style='color:#255F83'>“A person is running in place at
+                                        a medium pace.”</span></p></div></div></div><div class="col"><div class="card shadow-sm"><video id="outpainting" autoplay controls muted loop playsinline height="100%"><source src="./assets/outpaint_forward_backward.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Generating first 25% and last 25% of motion of based on the text <span
+                                        style='color:#660000'>“person walks backward.”</span> conditioned on 50% motion
+                                    in
+                                    the middle of motion of <span style='color:#255F83'>“A person walks forward in a
+                                        straight line.”</span></p></div></div></div></div></div></div> -->
+    </main>
+    <footer class="text-body-secondary py-5">
+      <div class="container">
+        <p class="float-end mb-1">
+          <a href="#">Back to top</a>
+        </p>
+        <!-- <p class="mb-1">Album example is &copy; Bootstrap, but please download and customize it for yourself!</p><p class="mb-0">New to Bootstrap? <a href="/">Visit the homepage</a> or read our <a
+                    href="/docs/5.3/getting-started/introduction/">getting started guide</a>.</p> -->
+      </div>
+    </footer>
+    <!-- <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script> -->
+  </body>
+</html>
