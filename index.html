@@ -595,7 +595,7 @@
           <div class="row">
             <div class="col">
               <h3>Motion Temporal Suffix Editing:</h3>
-              <h6>Generating 50% motion in the start based on the text <span style='color:#FFFF00'>“a figure walks in a straight line, turns around, and crawls on all fours back the same direction.​”</span> conditioned on last 50% of motion of <span style='color:#E40000'>a person walks forward quickly and leaves a trail behind them as if they are dripping paint.”</span>
+              <h6>Generating 50% motion in the start based on the text <span style='color:#FFFF00'>“a person walks forward and jumps over an object, then turns around to jump over it again and walk back.​”</span> conditioned on last 50% of motion of <span style='color:#E40000'>a person slowly walked forward and made a circle.”</span>
               </h6>
             </div>
           </div>
@@ -619,9 +619,7 @@
               <div class="row">
                 <div class="col">
                   <h3>Long Sequence Generation:</h3>
-                  <h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'A figure sits on the chair.', 'a man jump forward.', 'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.' <span style='color:#255F83'>Blue frames indicate the generated short motion sequences.</span>
-                    <span style='color:#660000'>Red frames indicate transition frames.</span>
-                  </h6>
+                  <h6>Generating long sequence motion by combining multiple motions as follow: 'a person runs forward and jumps.', 'a person crawls.', 'a person does a cart wheel.', 'a person walks forward up stairs and then climbs down.', 'a person sits on the chair and then steps up.'</h6>
                 </div>
               </div>
               <div class="card shadow-sm">
@@ -629,16 +627,11 @@
                   <source src="./assets/longrange/longrange.mp4" type="video/mp4">
                 </video>
                 <div class="card-body mmm-card">
-                  <p class="card-text">BAMM (our)</p>
+                  <p class="card-text">BAD</p>
                   <div class="d-flex justify-content-between align-items-center">
-                    <small class="text-body-secondary">(Realistic Motion)</small>
                   </div>
                 </div>
               </div>
-              <!-- <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Long Sequence Generation:</h3><h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'a figure sits on the chair.', 'a man jump forward.',
-                                'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.'
-                                <span style='color:#660000'>Blue frames indicate the generated short motion sequences.</span><span style='color:#255F83'>Red frames indicate transition frames.</span></h6></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center"><div class="col"><div class="card shadow-sm"><video id="inbtween_mmm" controls muted loop playsinline height="100%"><source src="./assets/longrange/longrange.mp4" type="video/mp4"></video><div class="card-body mmm-card"><p class="card-text">BAMM (our)</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Realistic Motion)</small></div></div></div></div> -->
-              <!-- <div class="col"><div class="card shadow-sm"><video id="inbtween_mdm" controls muted loop playsinline height="100%"><source src="./assets/in_between_mdm2.mp4" type="video/mp4"></video><div class="card-body"><p class="card-text">MDM</p><div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Not jump)</small></div></div></div></div> -->
             </div>
           </div>
         </div>
@@ -681,7 +674,7 @@
               </div>
             </div>
           </div>
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2" style="margin-top: 40px">
+          <!-- <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2" style="margin-top: 40px">
             <div class="col">
               <div class="card shadow-sm">
                 <video id="forward-lean" controls muted loop playsinline height="100%">
@@ -704,40 +697,16 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       </div>
-      <!-- 
-        <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Long Sequence Generation:</h3><h6>Generating long sequence motion by combining multiple motions as follow: 'A person is doing a salsa dance moving their legs and arms.', 'a figure sits on the chair.', 'a man jump forward.',
-                            'A person punches as if they are boxing.', 'A person is stumbling while walking', 'A person is running forward in a long line.'
-                            <span style='color:#660000'>Blue frames indicate the generated short motion sequences.</span><span style='color:#255F83'>Red frames indicate transition frames.</span></h6></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2 justify-content-center"><div class="col"><div class="card shadow-sm"><video id="longrange_true" controls muted loop playsinline height="100%"><source src="./assets/longrange/longrange.mp4" type="video/mp4"></video><div class="card-body mmm-card"><p class="card-text">BAMM (our)</p>
-																																				<!-- <div class="d-flex justify-content-between align-items-center"><small class="text-body-secondary">(Realistic Motion)</small></div> -->
       </div>
       </div>
       </div>
       </div>
       </div>
       </div> -->
-      <!-- <div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Motion Completion:</h3></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2"><div class="col"><div class="card shadow-sm"><video id="complete2" controls muted loop playsinline height="100%"><source src="./assets/complete2.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Completing <u><b>first</b></u> 50% motion based on the text <span
-                                        style='color:#660000'>“A person
-                                        performs jumping jacks.”</span> conditioned on last 50% of
-                                    motion of
-                                    <span style='color:#255F83'>“A person
-                                        crawling from left to right”</span></p></div></div></div><div class="col"><div class="card shadow-sm"><video id="complete1" controls muted loop playsinline height="100%"><source src="./assets/completion1.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Completing <u><b>last</b></u> 50% motion based on the text <span
-                                        style='color:#660000'>“A person
-                                        performs jumping jacks.”</span> conditioned on first 50% of
-                                    motion of
-                                    <span style='color:#255F83'>“A person
-                                        crawling from left to right”</span></p></div></div></div></div></div></div><div class="album py-5 bg-body-tertiary"><div class="container"><div class="row"><div class="col"><h3>Motion Temporal Outpainting:</h3></div></div><div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 g-2"><div class="col"><div class="card shadow-sm"><video id="outpainting" controls muted loop playsinline height="100%"><source src="./assets/outpainting.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Generating first 25% and last 25% of motion of based on the text <span
-                                        style='color:#660000'>“A person sits down”</span> conditioned on 50% motion in
-                                    the middle of motion of <span style='color:#255F83'>“A person is running in place at
-                                        a medium pace.”</span></p></div></div></div><div class="col"><div class="card shadow-sm"><video id="outpainting" controls muted loop playsinline height="100%"><source src="./assets/outpaint_forward_backward.mp4" type="video/mp4"></video><div class="card-body mmm-card"><h6 class="card-text">BAMM (our)</h6><p>Generating first 25% and last 25% of motion of based on the text <span
-                                        style='color:#660000'>“person walks backward.”</span> conditioned on 50% motion
-                                    in
-                                    the middle of motion of <span style='color:#255F83'>“A person walks forward in a
-                                        straight line.”</span></p></div></div></div></div></div></div> -->
-
     </main>
     <footer class="text-body-secondary py-5">
       <div class="container">
